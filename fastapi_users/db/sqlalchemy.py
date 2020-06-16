@@ -39,12 +39,9 @@ class GUID(TypeDecorator):  # pragma: no cover
                 return str(value)
 
     def process_result_value(self, value, dialect):
-        if value is None:
-            return value
-        else:
-            if not isinstance(value, uuid.UUID):
-                value = uuid.UUID(value)
-            return value
+        if value is not None and not isinstance(value, uuid.UUID):
+            value = uuid.UUID(value)
+        return value
 
 
 class SQLAlchemyBaseUserTable:
@@ -141,11 +138,12 @@ class SQLAlchemyUserDatabase(BaseUserDatabase[UD]):
         oauth_accounts_values = None
 
         if "oauth_accounts" in user_dict:
-            oauth_accounts_values = []
-
             oauth_accounts = user_dict.pop("oauth_accounts")
-            for oauth_account in oauth_accounts:
-                oauth_accounts_values.append({"user_id": user.id, **oauth_account})
+            oauth_accounts_values = [
+                {"user_id": user.id, **oauth_account}
+                for oauth_account in oauth_accounts
+            ]
+
 
         query = self.users.insert()
         await self.database.execute(query, user_dict)

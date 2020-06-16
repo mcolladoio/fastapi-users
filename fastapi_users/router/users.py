@@ -33,9 +33,8 @@ def get_users_router(
     async def _update_user(
         user: models.BaseUserDB, update_dict: Dict[str, Any], request: Request
     ):
-        for field in update_dict:
+        for field, hashed_password in update_dict.items():
             if field == "password":
-                hashed_password = get_password_hash(update_dict[field])
                 user.hashed_password = hashed_password
             else:
                 setattr(user, field, update_dict[field])

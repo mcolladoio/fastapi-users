@@ -38,14 +38,12 @@ def get_mongodb_user_db():
 
 @pytest.fixture
 async def mongodb_user_db(get_mongodb_user_db):
-    async for u in get_mongodb_user_db(UserDB):
-        yield u
+    yield from get_mongodb_user_db(UserDB)
 
 
 @pytest.fixture
 async def mongodb_user_db_oauth(get_mongodb_user_db):
-    async for u in get_mongodb_user_db(UserDBOAuth):
-        yield u
+    yield from get_mongodb_user_db(UserDBOAuth)
 
 
 @pytest.mark.asyncio

@@ -71,14 +71,14 @@ class Authenticator:
         @with_signature(signature, func_name="get_optional_current_active_user")
         async def get_optional_current_active_user(*args, **kwargs):
             user = await get_optional_current_user(*args, **kwargs)
-            if not user or not user.is_active:
+            if not (user and user.is_active):
                 return None
             return user
 
         @with_signature(signature, func_name="get_optional_current_superuser")
         async def get_optional_current_superuser(*args, **kwargs):
             user = await get_optional_current_active_user(*args, **kwargs)
-            if not user or not user.is_superuser:
+            if not (user and user.is_superuser):
                 return None
             return user
 
